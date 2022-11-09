@@ -16,8 +16,25 @@ driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), opti
 driver.implicitly_wait(5)
 
 # Login
-driver.get('https://talk.op.gg/s/lol/all?sort=top')
-driver.find_element(By.XPATH, '//*[@id="header"]/header/div[2]/div[1]/a').click()
+driver.get('https://member.op.gg/?redirect_url=//www.op.gg/')
 driver.find_element(By.NAME, 'email').send_keys(op_id)
 time.sleep(0.2)
 driver.find_element(By.NAME, 'password').send_keys(op_pw)
+time.sleep(0.2)
+driver.find_element(By.CSS_SELECTOR, '#root > div > div > div > div.member-card-layout__inner > div > form > button.member-button.login__btn').click()
+time.sleep(1)
+driver.get('https://talk.op.gg/s/lol/all')
+
+# Enter Articles
+articles = driver.find_elements(By.CLASS_NAME, 'article-list-item__info')
+for article in articles:
+    article.click()
+        
+    displayOk = driver.find_element(By.CLASS_NAME, 'article-vote__up-arrow--on').is_displayed()
+    if displayOk:
+        print('Already Clicked !')
+    else:
+        driver.find_element(By.CLASS_NAME, 'article-vote__button').click()
+    time.sleep(1)
+    pass    
+    driver.get('https://talk.op.gg/s/lol/all')
