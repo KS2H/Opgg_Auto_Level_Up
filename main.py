@@ -18,23 +18,35 @@ driver.implicitly_wait(5)
 # Login
 driver.get('https://member.op.gg/?redirect_url=//www.op.gg/')
 driver.find_element(By.NAME, 'email').send_keys(op_id)
-time.sleep(0.2)
+time.sleep(0.1)
 driver.find_element(By.NAME, 'password').send_keys(op_pw)
-time.sleep(0.2)
+time.sleep(0.1)
 driver.find_element(By.CSS_SELECTOR, '#root > div > div > div > div.member-card-layout__inner > div > form > button.member-button.login__btn').click()
 time.sleep(1)
-driver.get('https://talk.op.gg/s/lol/all')
+
+
+# Get Links
+articles = []
+for i in range(9):
+	link = 'https://talk.op.gg/s/lol/all?page=' + str(i)
+	driver.get(link)
+	for element in driver.find_elements(By.CLASS_NAME, 'article-list-item__info'):
+		if element.get_attribute('href') not in articles:
+			articles.append(element.get_attribute('href'))
+	print('Page ' + str(i) + ' Done !')
 
 # Enter Articles
-articles = driver.find_elements(By.CLASS_NAME, 'article-list-item__info')
-for article in articles:
-    article.click()
-        
-    displayOk = driver.find_element(By.CLASS_NAME, 'article-vote__up-arrow--on').is_displayed()
-    if displayOk:
-        print('Already Clicked !')
-    else:
-        driver.find_element(By.CLASS_NAME, 'article-vote__button').click()
-    time.sleep(1)
-    pass    
-    driver.get('https://talk.op.gg/s/lol/all')
+for count in range(len(articles) - 1):
+	driver.get(articles[count])
+	try:
+		driver.find_element(By.XPATH, '//*[@id="postVote"]/div/button[2]').click()
+		driver.find_element(By.XPATH, '//*[@id="postVote"]/div/button[1]').click()
+		print('Article ' + str(count) + ' Done !')
+	except:
+		print('Article deleted')
+		pass
+	time.sleep(0.4)
+
+# Close
+driver.close()
+print('Done !')
