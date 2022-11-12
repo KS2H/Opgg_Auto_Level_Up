@@ -27,7 +27,7 @@ time.sleep(1)
 
 # Get Links
 articles = []
-for i in range(9):
+for i in range(10):
 	link = 'https://talk.op.gg/s/lol/all?page=' + str(i)
 	driver.get(link)
 	for element in driver.find_elements(By.CLASS_NAME, 'article-list-item__info'):
@@ -39,8 +39,9 @@ for i in range(9):
 for count in range(len(articles) - 1):
 	driver.get(articles[count])
 	try:
-		driver.find_element(By.XPATH, '//*[@id="postVote"]/div/button[2]').click()
-		driver.find_element(By.XPATH, '//*[@id="postVote"]/div/button[1]').click()
+		element_class = driver.find_element(By.XPATH, '//*[@id="postVote"]/div/button[1]/span[1]').get_attribute('class')
+		if element_class == "article-vote__up-arrow":
+			driver.find_element(By.XPATH, '//*[@id="postVote"]/div/button[1]').click()
 		print('Article ' + str(count) + ' Done !')
 	except:
 		print('Article deleted')
